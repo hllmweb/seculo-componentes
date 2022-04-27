@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title><?= $titulo_header; ?></title>
+
+	<!--css-->
+	<link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/app.css').'?v='.time(); ?>">
+	<link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/responsive.css'); ?>">
+	<link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/jquery-ui.css'); ?>">
+	<link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/all.min.css'); ?>">
+</head>
+<body>
+	<div class="app-main">
+		<header class="header-top">
+			<div class="box left">
+				<h2 class="header-title"><?= $titulo_header; ?></h2>
+			</div>
+			<div class="box right"></div>
+		</header>
+
+		<div class="content-main margin-content">
+            <div class="row padding">
+                <div class="mensagem"></div>
+            </div>
+            
+
+            <form id="form-add-notificacao">
+
+            <div class="row flex padding">
+                <div class="box-filter">
+                     <div class="icon">
+                        <i class="far fa-bell"></i>
+                    </div>
+                    <input type="text" name="titulo" id="titulo" class="input-text-lx" placeholder="Titulo da Notificação">
+                </div>
+                <div class="box-filter">
+                    <div class="box-data">
+                        <div class="icon">
+                            <i class="far fa-calendar-alt"></i>
+                        </div>
+                        <input type="text" name="dt_notificar" id="dt_notificar" class="input-text-lx data_validade" placeholder="00/00/0000">
+                    </div>
+                    <div class="box-hora">
+                        <div class="icon">
+                            <i class="far fa-clock"></i>
+                        </div>
+                        <input type="text" name="hr_notificar" id="hr_notificar" class="input-text-lx hora_validade" placeholder="00:00">
+                    </div>
+                </div>
+                <div class="box-filter">
+                    <select class="dropmenu" id="dropmenu-envio" name="dropmenu-envio">
+                        <option value="" selected="selected">TIPO DE ENVIO</option>
+                        <option value="1">Aplicativo</option>
+                        <option value="2">SMS</option>
+                    </select>                           
+                </div>
+
+
+            </div>
+
+
+
+            <div class="row flex padding">
+                <div class="box-filter">
+                    <select class="dropmenu" id="dropmenu-curso" name="dropmenu-curso">
+                        <option selected="selected">Curso Destino</option>
+                        <option value="todos">Todos</option>
+                        <option value="001">Infantil</option>
+                        <option value="002">Fundamental I</option>
+                        <option value="003">Fundamental II</option>
+                        <option value="004">Médio</option>
+                    </select>
+                </div>
+
+                <div class="box-filter">
+                    <select class="dropmenu dropmenu-90" id="dropmenu-turma" name="dropmenu-turma">
+                        <option selected="selected">Turma Destino</option>
+                    </select>
+                </div>
+
+                <div class="box-filter">
+                    <select class="dropmenu" id="dropmenu-tipo" name="dropmenu-tipo">
+                        <option value="0" selected="selected">Publico Destino</option>
+                        <option value="T">Ambos(aluno e responsável)</option>
+                        <option value="A">Aluno</option>
+                        <option value="R">Responsável</option>
+                        <option value="E">Especificar Pessoa</option>
+                    </select>
+                </div>
+
+            </div>
+
+
+
+
+            <div class="row especifico">
+                <div class="section padding-up-down">
+                    <div class="section-box">
+                        
+                        <div class="section-left">
+                            
+                            <div class="content-box">
+                                <div class="row content-box-title">    
+                                    <div class="width-50">
+                                        <h3 class="box-title inline">Selecione o Aluno Especifico</h3>
+                                    </div>
+                                    <div class="width-50">
+                                        <input type="hidden" name="codcurso" id="codcurso" value="">
+                                        <input type="hidden" name="codturma" id="codturma" value="">
+                                        <input type="hidden" name="dados_aluno" id="dados_aluno" value="">
+
+                                        <!-- <button class="btn-add" id="add-aluno">Adicionar</button> -->
+                                        <button class="btn-add" id="popup" data-id="aluno">Adicionar</button>
+                                    </div>
+                                </div>
+                                <div class="row content-box-main">
+                                    <div class="row table-header-box">
+                                        <div class="col-x2"><strong>Nome</strong></div>
+                                        <!--<div class="col-x2"><strong>Enviar p/ Responsável</strong></div>--> 
+                                    </div>
+                                    <div class="row table-content-box" id="table-content-box-aluno">
+                                        <!--dados dos alunos--> 
+                                        <div class="col-x1 text-center">Nenhum aluno!</div>
+                                    </div>
+
+
+                                </div>
+                            </div> 
+
+                        </div>
+
+
+                        <div class="section-right">
+                            
+                            <div class="content-box">
+                                <div class="row content-box-title">    
+                                    <div class="width-50">
+                                        <h3 class="box-title inline">Selecione o Responsável Especifico</h3>
+                                    </div>
+                                    <div class="width-50">
+                                        <input type="hidden" name="codcurso" id="codcurso_r" value="">
+                                        <input type="hidden" name="codturma" id="codturma_r" value="">
+                                        <input type="hidden" name="dados_responsavel" id="dados_responsavel" value="">
+
+                                        <!-- <button class="btn-add" id="add-responsavel">Adicionar</button> -->
+                                        <button class="btn-add" id="popup" data-id="responsavel">Adicionar</button>
+                                    </div>
+                                </div>
+                                <div class="row content-box-main">
+                                    <div class="row table-header-box">
+                                        <div class="col-x1"><strong>Nome</strong></div>
+                                    </div>
+                                    <div class="row table-content-box" id="table-content-box-responsavel">
+                                        <!--dados dos responsaveis-->
+                                        <div class="col-x1 text-center">Nenhum responsável!</div>
+                                    </div>
+
+                                </div>
+                            </div> 
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="section-box padding">
+                    <textarea placeholder="Digite a Mensagem" name="msg" id="msg" class="textarea"></textarea>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="btn-box">
+                    <button class="btn-page save"><i class="far fa-save"></i> Salvar</button>
+                    <a href="<?= base_url('notificacao/inicio'); ?>" class="btn-page delete"><i class="fas fa-times"></i> Cancelar</a>
+                </div>
+            </div>            
+
+
+
+
+            </form>
+		</div>
+
+
+
+
+
+
+
+
+	</div>
+
+
+    <!--modal ou popup-->
+    <div id="modal" class="modal-geral">
+        <div id="modal-tamanho">
+            
+        </div>
+    </div>
+
+
+	<script src="<?= base_url('assets/js/jquery.min.js'); ?>"></script>
+	<script src="<?= base_url('assets/js/jquery-ui.js'); ?>"></script>
+    <script>
+        var date2 = new Date();
+        date2.setDate(date2.getDate());
+
+        let ano = date2.getFullYear();
+        let mes = (1 + date2.getMonth()).toString().padStart(2, '0');
+        let dia = date2.getDate().toString().padStart(2, '0');
+      
+        //return month + '/' + day + '/' + year;
+        $(".data_validade").val(dia+"/"+mes+"/"+ano);
+
+        $(".data_validade").datepicker({
+            dateFormat: 'dd/mm/yy',
+            maxDate: date2,
+            dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+            dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+            dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+            monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+            monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+            nextText: 'Próximo',
+            prevText: 'Anterior'
+        });
+
+
+        //selecionando curso
+        $(document).on("change","#dropmenu-curso", function(e){
+            codcurso = $(this).val();
+            $("#codcurso").val(codcurso);
+
+            $.ajax({
+                url: "<?= base_url(); ?>notificacao/filtro/lst_turma",
+                type: 'POST',
+                data: {
+                    codcurso: codcurso
+                },
+                beforeSend: function(){
+                    $("#dropmenu-turma").html("<option>Carregando...</option>");
+                },
+                success: function(data){
+                    $("#dropmenu-turma").html(data);
+                }
+            })
+
+
+            e.preventDefault();
+        });
+
+
+        //selecionando turma 
+        $(document).on("change", "#dropmenu-turma", function(e){
+            codturma = $(this).val();
+            $("#codturma").val(codturma);
+        });
+
+
+        //seleciona a condição de envio - tipo{T=Ambos; A=Aluno; R=Responsável}
+        $(document).on("change","#dropmenu-tipo",function(e){
+            p_tipo_envio = $(this).val();
+            p_codcurso   = $("#codcurso").val();
+            p_codturma   = $("#codturma").val();
+            $("#table-content-box-aluno .col-x1:nth-child(1)").hide(); //aluno
+            $("#table-content-box-responsavel .col-x1:nth-child(1)").hide(); //responsavel
+
+            if(p_tipo_envio=='T'){ //T=Ambos
+                //alunos
+                // $.ajax({
+                //     url: "<?= base_url(); ?>notificacao/filtro/lst_aluno",
+                //     type: "POST",
+                //     data: {
+                //         p_codcurso: p_codcurso,
+                //         p_codturma: p_codturma
+                //     },
+                //     success: function(data){
+                //         // $("#dados_aluno").attr("value",data); 
+                //     }
+                // });
+
+                //responsavel
+                // $.ajax({
+                //     url: "<?= base_url(); ?>notificacao/filtro/lst_responsavel",
+                //     type: 'POST',
+                //     data: {
+                //         p_codcurso: p_codcurso,
+                //         p_codturma: p_codturma
+
+                //     },
+                //     success: function(data){
+                //         // $("#dados_responsavel").attr("value",data);
+                //     }
+                // });
+                if($(".especifico").hasClass("active")){
+                    $(".especifico").removeClass("active");
+                    $(".especifico").addClass("disable");
+                }
+            }else if(p_tipo_envio=='A'){ //A=Alunos
+                console.log("Aluno");
+                $.ajax({
+                    url: "<?= base_url(); ?>notificacao/filtro/lst_aluno",
+                    type: "POST",
+                    data: {
+                        p_codcurso: p_codcurso,
+                        p_codturma: p_codturma
+                    },
+                    success: function(data){
+                        $("#dados_aluno").attr("value",data); 
+                        $("#dados_responsavel").val("");
+                    }
+                });
+
+            }else if(p_tipo_envio=='R'){ //R=Responsável
+                console.log("Responsável");
+                $.ajax({
+                    url: "<?= base_url(); ?>notificacao/filtro/lst_responsavel",
+                    type: 'POST',
+                    data: {
+                        p_codcurso: p_codcurso,
+                        p_codturma: p_codturma
+                    },
+                    success: function(data){
+                        $("#dados_aluno").val("");
+                        $("#dados_responsavel").attr("value",data);
+                    }
+                });
+            
+            }else if(p_tipo_envio=='E'){
+                $("#dados_aluno").val("");
+                $("#dados_responsavel").val("");
+
+               // if(p_codturma == )
+
+                $(".especifico").removeClass("disable");
+                $(".especifico").addClass("active");
+            }
+
+
+            e.preventDefault();
+
+        });
+
+        //add aluno
+        $(document).on("click", "#add-aluno",function(e){
+            var p_codcurso = $("#codcurso").val();             
+            var p_codturma = $("#codturma").val();
+            $("#table-content-box-aluno .col-x1:nth-child(1)").hide(); //aluno
+
+
+            $.ajax({
+                url: "<?= base_url(); ?>notificacao/filtro/lst_aluno",
+                type: 'POST',
+                data: {
+                    p_codcurso: p_codcurso,
+                    p_codturma: p_codturma
+                },
+                success: function(data){
+                    $("#dados_aluno").attr("value", data);
+
+
+                    $.each($.parseJSON(data),function(i, index){
+                        html  = "<div class='row-x6'>";
+                        html += "<div class='col-x2'>";
+                        html += "<input type='hidden' id='codra' name='codra' value='"+index.RA+"'>";
+                        html +=  index.NM_ALUNO;
+                        html += "</div>";
+
+                        html += "<div class='col-x2'>";
+                        html += " ";//"Sim";
+                        html += "<a href='#' id='remove-aluno' data-id='"+index.RA+"' class='inline btn-del'><i class='far fa-trash-alt'></i></a>";
+                        html += "</div>";
+                        html += "</div>";
+
+                        $("#table-content-box-aluno").append(html);
+                        console.log(index);
+                    });
+                }
+            })  
+
+            e.preventDefault(); 
+        });
+
+        //add responsavel
+        $(document).on("click", "#add-responsavel", function(e){
+            var p_codcurso = $("#codcurso").val();
+            var p_codturma = $("#codturma").val();
+            $("#table-content-box-responsavel .col-x1:nth-child(1)").hide(); //responsavel
+
+            $.ajax({
+                url: "<?= base_url(); ?>notificacao/filtro/lst_responsavel",
+                type: 'POST',
+                data: {
+                    p_codcurso: p_codcurso,
+                    p_codturma: p_codturma
+
+                },
+                success: function(data){
+                    $("#dados_responsavel").attr("value",data);
+                    
+                    $.each($.parseJSON(data),function(i, index){
+                        html  = "<div class='row-x6'>";
+                        html += "<div class='col-x2'>";
+                        html += "<input type='hidden' id='codcpf' name='codcpf' value='"+index.CPF_RESPONSAVEL+"'>";
+                        html += index.NM_RESPONSAVEL;
+                        html += "</div>";
+
+                        html += "<div class='col-x2'>";
+                        html += "<a href='#' id='remove-responsavel' data-id='"+index.CPF_RESPONSAVEL+"' class='inline btn-del'><i class='far fa-trash-alt'></i></a>";
+                        html += "</div>";
+                        html += "</div>";
+
+
+                        $("#table-content-box-responsavel").append(html);
+                        console.log(index);
+                    });
+                }
+            });
+
+            e.preventDefault();
+        });
+
+
+        //remove o aluno
+        $(document).on("click","#remove-aluno",function(e){
+            p_id_aluno = $(this).data("id");
+            that = $(this).parent().parent().remove();
+            console.log(p_id_aluno);
+
+
+            e.preventDefault();
+        });
+
+        //remove o responsável
+        $(document).on("click", "#remove-responsavel", function(e){
+            dados_responsavel   = $("#dados_responsavel");
+            p_id_responsavel    = $(this).data("id");    
+            that = $(this).parent().parent().remove();
+
+            console.log(p_id_responsavel);
+            //var arr_responsavel = $("#dados_responsavel").val();
+
+            /*$(".list-responsavel").each(function(){
+                obj_arr_responsavel.splice($.inArray(p_id_responsavel, obj_arr_responsavel), 1);
+                  console.log(obj_arr_responsavel);
+            });
+            dados_responsavel.val("["+arr_responsavel+"]");*/
+
+
+            e.preventDefault();
+        });
+
+
+        $(".mensagem").hide(); //esconde mensagem se foi adicionar
+        //formulário de adicionar notificacoes
+        $(document).on("submit","#form-add-notificacao", function(e){
+            var titulo              = $("#titulo").val();
+            var dt_notificar        = $("#dt_notificar").val(); 
+            var hr_notificar        = $("#hr_notificar").val();
+            var dropmenu_envio      = $("#dropmenu-envio").val();
+            var dropmenu_curso      = $("#dropmenu-curso").val();
+            var dropmenu_turma      = $("#dropmenu-turma").val();
+            var dropmenu_tipo       = $("#dropmenu-tipo").val();
+            var msg                 = $("#msg").val();
+
+            var dados_responsavel   = $("#dados_responsavel").val();
+            var dados_aluno         = $("#dados_aluno").val();
+
+
+            //todos dropmenu
+            if(titulo.length == 0){
+                alert("E importante selecionar o campo!");
+                $("#titulo").addClass("obrigatorio");
+            }else if(dt_notificar.length == 0){
+                 alert("E importante selecionar o campo!");
+                $("#dt_notificar").addClass("obrigatorio");
+            }else if(hr_notificar.length == 0){
+                alert("E importante selecionar o campo!");
+                $("#hr_notificar").addClass("obrigatorio");
+            }else if(dropmenu_envio.length == 0){
+                alert("E importante selecionar o campo!");
+                $("#dropmenu-envio").addClass("obrigatorio");
+            }else if(dropmenu_tipo == 0){
+                alert("E importante selecionar o campo!");
+                $("#dropmenu-tipo").addClass("obrigatorio");
+            }else{
+
+                    console.log("ok"+dropmenu_envio.length);
+                    console.log("cheio"+dados_aluno.length);
+                    console.log("cheio"+dados_responsavel.length);
+                    $.ajax({
+                        url: "<?= base_url(); ?>notificacao/adicionar/form_notificacao",
+                        type: 'POST',
+                        data: {
+                            titulo: titulo,
+                            dt_notificar: dt_notificar,
+                            hr_notificar: hr_notificar,
+                            dropmenu_envio: dropmenu_envio,
+                            dropmenu_curso: dropmenu_curso,
+                            dropmenu_turma: dropmenu_turma,
+                            dropmenu_tipo: dropmenu_tipo,
+                            msg: msg,
+                            dados_responsavel: dados_responsavel,
+                            dados_aluno: dados_aluno
+                        },
+                        success: function(data){
+                            if(data == 1){
+                                $(".mensagem").show();
+                                $(".mensagem").html("<p>Notificação Adicionada com Sucesso!</p>");
+                                window.location.href = "<?= base_url(); ?>notificacao/inicio";
+                                //$("#form-add-notificacao")[0].reset(); //limpa o formulário, função será disparada somente após o cadastrar for realmente efetivado
+                                
+                                //limpando box aluno
+                                $("#codcurso").val("");
+                                $("#codturma").val("");
+                                $("#dados_aluno").val("");
+                                $("#table-content-box-aluno").html("");
+
+                                //limpando box responsável
+                                $("#codcurso_r").val("");
+                                $("#codturma_r").val("");
+                                $("#dados_responsavel").val("");
+                                $("#table-content-box-responsavel").html("");
+                            }
+                        }
+                    });
+
+
+                   
+            }
+
+            return false;
+
+            e.preventDefault();
+        });
+
+
+
+        //abrir popup ou modal
+        $(document).on("click","#popup", function(e){
+            p_id_tipo           = $(this).data("id");
+            p_codcurso          = $("#codcurso").val();    
+            p_codturma          = $("#codturma").val();
+
+            pagina              = "<?= base_url(); ?>notificacao/popup/"+p_id_tipo;
+
+            $.ajax({
+                url: pagina,
+                type: "POST",
+                dataType: "html",
+                data:{
+                    p_codcurso: p_codcurso,
+                    p_codturma: p_codturma
+                },
+                success: function(data){
+                     console.log(data);
+                    $("#modal").addClass("modal-ativo");
+                    $("#modal-tamanho").addClass("modal-corpo-grande");
+                    if($("#modal").hasClass("modal-ativo"))
+                        $(".modal-corpo-grande").html(data);
+                       
+                }
+            });
+
+            e.preventDefault();
+        });
+
+
+        $(".especifico").addClass("disable");
+
+
+        function fecharpopup(){
+            $("#modal").removeClass("modal-ativo");
+            $("#modal").find("#modal-tamanho").removeClass("modal-corpo-pequeno");
+            $("#modal").find("#modal-tamanho").removeClass("modal-corpo-medio");
+            $("#modal").find("#modal-tamanho").removeClass("modal-corpo-grande");
+            $("#modal").find("#modal-tamanho").html("");        
+        }
+
+    </script>
+</body>
+</html>

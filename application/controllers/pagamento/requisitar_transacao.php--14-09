@@ -1,0 +1,262 @@
+<?php
+//
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+class Requisitar_transacao extends CI_Controller {
+    
+     function __construct() {
+        parent::__construct();
+
+        //models
+        //$this->load->model('m_acompanhamento', 'acompanhamento', true);
+        //$this->load->model('m_questionamento', 'questionamento', true);
+        $this->load->model('m_pagamento', 'pagamento', true);
+
+        //libers
+        $this->load->helper(array('url','directory'));
+    }
+    
+    function index() {     
+        $numeroEstabelecimento    = "1051047860";
+        $chaveCielo               = "dd8b9b4c3fa1ed6594afff1fa2d4473924153eb01a04e4f9f3c873fe44245512";
+        $urlProducao              = "https://ecommerce.cbmp.com.br/servicos/ecommwsec.do";
+
+        $produtosArray      = $this->input->post('produtosArray');
+        $formaPagto         = ($this->input->post('formaPagamento') == "A") ? "D" : "C"; //se é debito ou credito 
+        
+
+        switch ($this->input->post('codigoBandeira')) {
+            case "visa":
+                $codBandeira = 1;
+                break;
+            case "mastercard":
+                $codBandeira = 2;
+                break;
+            case "elo":
+                $codBandeira = 3;
+                break;
+            case "amex":
+                $codBandeira = 5;
+                break;
+        }            
+
+        $formaPagamento     = $this->input->post('formaPagamento');
+        $codigoBandeira     = $this->input->post('codigoBandeira');
+        $numeroCartao       = $this->input->post('numeroCartao');
+        $Cvc                = $this->input->post('Cvc');
+        $Nome               = $this->input->post('Nome');
+        $Vencimento         = explode("/",$this->input->post('Vencimento'));
+        $dataAtual          = date('Y-m-d\TH:i:s');
+        $qtdParcela         = 1; 
+        $metodoAutorizacao  = 3;
+        $capturaAutomatica  = true;
+        $valorTotal         = str_replace(",","",$this->input->post('valorTotal'));
+        
+
+
+        if ($Cvc == null || $Cvc == ""){
+            $Indicador = "0";
+        }else if ($codigoBandeira == "mastercard"){
+            $Indicador = "1";
+        }else {
+            $Indicador = "1";
+        }
+
+        
+        //inicializando log
+        try{
+            $tid_log = '';
+            $nsu_log = '';
+            $arp_log = '';            
+
+            $arr_aluno_log = explode(",", $produtosArray);     
+
+            foreach($arr_aluno_log as $aluno):
+                $arr_item_log = explode(":", $aluno);
+
+                    $cpf_responsavel_log    = $arr_item_log[0];
+                    $separando_log          = explode("-",$arr_item_log[1]);
+                    $ra_log                 = $separando_log[0]; 
+                    $nomeAluno_log          = $separando_log[1];
+                    $codigoProduto_log      = $arr_item_log[2];
+                    $qtdItens_log           = $arr_item_log[3];
+                    $precoItem_log          = $arr_item_log[4];
+                    $totalItem_log          = $arr_item_log[5];
+                    $totalCompra_log        = $arr_item_log[6];
+
+                    $p_insert_log = array(
+                        'p_tid'                     =>  $tid_log, 
+                        'p_cd_usuario_resp'         =>  $cpf_responsavel_log,
+                        'p_cd_usuario_cli'          =>  $ra_log,
+                        'p_idprd'                   =>  $codigoProduto_log,
+                        'p_prod_qtd'                =>  $qtdItens_log,
+                        'p_valor_unit'              =>  $precoItem_log,
+                        'p_compra_qt_parc'          =>  1,
+                        'p_tipo_pagto'              =>  $formaPagto,
+                        'p_cd_rede_cartao'          =>  1,
+                        'p_cartao_bandeira'         =>  $codBandeira,
+                        'p_cartao_numero'           =>  $numeroCartao,
+                        'p_cartao_validade'         =>  $this->input->post('Vencimento'),
+                        'p_cartao_nsu'              =>  $nsu_log,
+                        'p_cartao_nr_autorizacao'   =>  $arp_log,
+                        'p_status'                  =>  0
+                    );
+
+                   $result_insert_log = $this->pagamento->insert_ecom_vendas_produto_log($p_insert_log);
+                 
+            endforeach;
+
+            if(!$result_insert_log){
+                throw new Exception('Conexão com banco Invalida, tente novamente mais tarde!');
+                exit;
+            }
+
+
+        }catch(Exception $e){
+            echo "Error: ".$e->getMessage();
+        }
+
+
+        $Codigo = "829829"; //codigo do aluno + id do produto
+        $string = '<?xml version="1.0" encoding="ISO-8859-1"?> 
+        <requisicao-transacao id="'.$Codigo.'" versao="1.2.1">
+        <dados-ec>
+              <numero>'.$numeroEstabelecimento.'</numero>
+              <chave>'.$chaveCielo.'</chave>
+        </dados-ec>
+        <dados-portador>
+            <numero>'.$numeroCartao.'</numero>
+            <validade>'.$Vencimento[1].$Vencimento[0].'</validade>
+            <indicador>'.$Indicador.'</indicador>
+            <codigo-seguranca>'.$Cvv.'</codigo-seguranca>
+            <nome-portador>'.$Nome.'</nome-portador>
+        </dados-portador>
+        <dados-pedido>
+            <numero>'.$Codigo.'</numero>
+            <valor>'.$valorTotal.'</valor>
+            <moeda>986</moeda>
+            <data-hora>'.$dataAtual.'</data-hora>
+            <descricao>www.seculomanaus.com.br</descricao>
+            <idioma>PT</idioma>
+        </dados-pedido>
+        <forma-pagamento>
+            <bandeira>'.$codigoBandeira.'</bandeira>
+            <produto>'.$formaPagamento.'</produto>
+            <parcelas>'.$qtdParcela.'</parcelas>
+        </forma-pagamento>
+            <autorizar>'.$metodoAutorizacao.'</autorizar>
+            <capturar>'.$capturaAutomatica.'</capturar>
+        </requisicao-transacao>';
+
+
+        $curl = curl_init();
+        curl_setopt( $curl , CURLOPT_HEADER , 0 );
+        curl_setopt( $curl , CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt( $curl , CURLOPT_RETURNTRANSFER , 1 );
+        curl_setopt( $curl , CURLOPT_FOLLOWLOCATION , 1 );
+        curl_setopt( $curl , CURLOPT_URL , $urlProducao);
+        curl_setopt( $curl , CURLOPT_POST , 1 );
+        curl_setopt( $curl , CURLOPT_POSTFIELDS , http_build_query(array('mensagem' => $string)));
+
+        $string = curl_exec($curl);
+        $xml = simplexml_load_string($string);
+        curl_close($ch);
+
+        //checa se retornou o tid
+        if ($xml->tid){
+            $tid_msg = 'TID da transação: '.$xml->tid.'<br>';
+            if($xml->captura->codigo == '6' AND $xml->autorizacao->codigo == '6'){
+                $status_msg = 'Transação autorizada pela operadora do cartão!';
+            }else{
+                $status_msg = 'Transação não autorizada: '.$xml->autorizacao->mensagem.'.';
+            }       
+        }else{
+            $tid_msg = 'Transação não autorizada sem tid: '.$xml->mensagem;
+        }
+
+        $tid    = strval($xml->tid);
+        $nsu    = strval($xml->autorizacao->nsu); 
+        $arp    = strval($xml->autorizacao->arp);     
+        $status = strval($xml->status);
+        $arr_aluno = explode(",", $produtosArray);
+
+        //separação de linhas para inserção na sp     
+        foreach($arr_aluno as $aluno):
+            $arr_item = explode(":", $aluno);
+
+                $cpf_responsavel    = $arr_item[0];
+                $separando          = explode("-",$arr_item[1]);
+                $ra                 = $separando[0]; 
+                $nomeAluno          = $separando[1];
+                $codigoProduto      = $arr_item[2];
+                $qtdItens           = $arr_item[3];
+                //$precoItem          = str_replace(",",".",$arr_item[4]);
+                $precoItem          = $arr_item[4];
+                $totalItem          = $arr_item[5];
+                $totalCompra        = $arr_item[6];
+
+                $p_insert = array(
+                    'p_tid'                     =>  $tid, 
+                    'p_cd_usuario_resp'         =>  $cpf_responsavel,
+                    'p_cd_usuario_cli'          =>  $ra,
+                    'p_idprd'                   =>  $codigoProduto,
+                    'p_prod_qtd'                =>  $qtdItens,
+                    'p_valor_unit'              =>  $precoItem,
+                    'p_compra_qt_parc'          =>  1,
+                    'p_tipo_pagto'              =>  $formaPagto,
+                    'p_cd_rede_cartao'          =>  1,
+                    'p_cartao_bandeira'         =>  $codBandeira,
+                    'p_cartao_numero'           =>  $numeroCartao,
+                    'p_cartao_validade'         =>  $this->input->post('Vencimento'),
+                    'p_cartao_nsu'              =>  $nsu,
+                    'p_cartao_nr_autorizacao'   =>  $arp,
+                    'p_status'                  =>  0
+                );
+
+               //realizando o insert na sp
+               $result_insert = $this->pagamento->sp_portal_venda_prod($p_insert);
+             
+        endforeach;
+
+        // exit;
+
+
+        $tid_result         = $result_insert[0]["TID"];
+        $mensagem_result    = $result_insert[0]["MENSAGEM"];
+        
+        
+        if($status == 6): //compra realizada
+            $p_update = array(
+                'p_tid'                     => $tid_result,
+                'p_cartao_nsu'              => $nsu,
+                'p_cartao_nr_autorizacao'   => $arp,
+                'p_status'                  => $status
+            );
+
+            //realizando o update
+            $result_update = $this->pagamento->sp_portal_venda_prod($p_update);
+           
+            $data = array('listar' => $result_update[0]["MENSAGEM"]);
+        else: //realizando primeiro insert
+            $data = array('listar' => $result_insert[0]["MENSAGEM"]);
+        endif;
+
+
+        $this->load->view('pagamento/sucesso', $data);
+    }
+
+    function sucesso(){
+        $this->load->view('pagamento/sucesso');
+    }
+
+    function erro(){
+        $this->load->view('pagamento/erro');
+    }
+    
+
+    function cielo(){
+        $this->load->view('pagamento/cielo');
+    }
+  
+}

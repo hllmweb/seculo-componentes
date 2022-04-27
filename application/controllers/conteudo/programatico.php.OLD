@@ -1,0 +1,41 @@
+<?php
+//
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+class Programatico extends CI_Controller {
+    
+     function __construct() {
+        parent::__construct();
+
+        //models
+        $this->load->model('m_programatico','programatico', true);
+        
+        //libers
+        $this->load->helper(array('url','directory'));
+    }
+    
+    function inicio() {     
+        $ra = $this->input->get_post('ra');
+        $param = array(
+            'p_ra' => $ra
+        );
+
+       $lista_conteudo_programatico = $this->programatico->lst_programatico_horario($param);
+    
+
+        $data = array(
+            'titulo_header'  => 'Conteúdo programatico',
+            'conteudo'       => 'Aqui ficará o conteúdo programatico',
+            'ra'             => $ra,
+            'listar'         => $lista_conteudo_programatico
+        );
+        
+        $this->load->view('conteudo/programatico', $data);
+    }
+
+
+  
+}
+
+?>

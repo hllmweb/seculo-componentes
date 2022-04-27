@@ -1,0 +1,65 @@
+<?php
+//
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+class Form_cardapio extends CI_Controller {
+    
+     function __construct() {
+        parent::__construct();
+
+        //models
+        $this->load->model('m_cardapio', 'cardapio', true);
+
+        //libers
+        $this->load->helper(array('url','directory'));
+    }
+    
+    function index() {     
+    
+        $cardapio = $this->cardapio->lista_cardapio();
+
+        $data = array(
+            'titulo_header' => 'Formulário de Cardápio',
+            'listar'        => $cardapio
+        );
+
+        $this->load->view('cardapio/form_cardapio', $data);
+    }
+
+
+    //atualiza cardapio
+    function update_cardapio(){
+        $lista_cardapio     = $this->cardapio->lista_cardapio();     
+        $p_id_tipo          = $this->input->get_post("p_id_tipo");
+        $p_id_opcao         = $this->input->get_post("p_id_opcao");
+        //$p_dt_ini_validade  = date('m/d/Y', strtotime($this->input->get_post("p_dt_ini_validade")));
+        //$p_dt_fim_validade  = date('m/d/Y', strtotime($this->input->get_post("p_dt_fim_validade")));
+
+        foreach($lista_cardapio as $dados):
+           $p_cardapio_semana = $dados['ID_CARDAPIO_SEMANA'];
+
+           $param = array(
+                'p_operacao'        => 1,
+                'p_id_tipo'         => $dados['ID_TIPO'],
+                'p_id_opcao'        => $dados['ID_OPCAO'],
+                'p_seg_desc'        => $this->input->get_post('seg_desc_'.$p_cardapio_semana),
+                'p_ter_desc'        => $this->input->get_post('ter_desc_'.$p_cardapio_semana),
+                'p_qua_desc'        => $this->input->get_post('qua_desc_'.$p_cardapio_semana),
+                'p_qui_desc'        => $this->input->get_post('qui_desc_'.$p_cardapio_semana),
+                'p_sex_desc'        => $this->input->get_post('sex_desc_'.$p_cardapio_semana)
+                //'p_dt_ini_validade' => $p_dt_ini_validade,
+                //'p_dt_fim_validade' => $p_dt_fim_validade
+            );
+
+            $resultado = $this->cardapio->update_cardapio($param);
+        endforeach;
+
+        //RETORNA A MENSAGEM DO BANCO  
+        echo $resultado[0]['MENSAGEM'];     
+
+    }
+
+  
+  
+}

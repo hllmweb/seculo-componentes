@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><?= $titulo_header_1; ?></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="pragma" content="no-cache" />
+
+	<!--css-->
+	<link rel="stylesheet" href="<?= base_url('assets/css/app.css'); ?>?v=<?= time(); ?>">
+	<link rel="stylesheet" href="<?= base_url('assets/css/responsive.css'); ?>?v=<?= time(); ?>">
+	<link rel="stylesheet" href="<?= base_url('assets/css/all.min.css'); ?>">
+	<link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/jquery-ui.css'); ?>">
+</head>
+<body>
+	<!--topo-->
+	<div class="app-main">
+		<!--LISTA DE SALDO-->
+		<header class="header-top">
+			<div class="box left">
+				<h2 class="header-title"><?= $titulo_header_2; ?></h2>
+			</div>
+			<div class="box right">
+				<!-- <a href="http://portal.seculomanaus.com.br:8080/web/app/edu/PortalEducacional/#/" class="btn btn-link"><i class="fas fa-chevron-left"></i></a> -->
+			</div>
+		</header>
+	
+		<table class="tabela-1">
+			<thead>
+				<tr>
+					<td>Nome</td>
+					<td>Saldo Crédito</td>
+					<td>Saldo Almoço</td>
+					<td></td>
+					<td>Limite de Crédito Diário</td>
+					<td>Ações</td>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach($listar_aluno as $dados): ?>
+				<tr>
+					<td><span><?= $dados['NM_USUARIO']; ?></span></td>
+					<td><span style="<?= ($dados['CREDITO'] <= 0) ? 'color:red; font-weight: bold;': '' ?>"><?= number_format($dados['CREDITO'],2,",","."); ?></span></td>
+					<td><span style="<?= ($dados['SALDO_ALMOCO'] <= 0) ? 'color:red; font-weight: bold;': '' ?>"><?= $dados['SALDO_ALMOCO']; ?></span></td>
+					<td>
+						<!--
+						<center>
+							<select id="tipo_transferencia" name="tipo_transferencia" class="input-60 inline">
+								<option>Selecione</option>
+								<option>Crédito p/ Debito</option>
+								<option>Débito p/ Crédito</option>
+							</select>
+							<input type="text" id="valor_transferencia" name="valor_transferencia" min="1" class="input-20 inline">
+						</center>-->
+						<center>
+							<button onclick="abrirPopUp('<?= base_url('pagamento/form_transferencia'); ?>?ra=<?= $dados['CD_ALUNO']; ?>&cd_usuario=<?= $cpf_responsavel; ?>','modal-corpo-pequeno'); return false;"  class="btn btn-link inline bg-green" alt="Transferência de Crédito" title="Transferência de Crédito"><i class="fas fa-random"></i> </button>
+						</center>
+					</td>
+					<td>
+						<center>
+						<input type="text" id="vl_credito" name="vl_credito" min="1" value="<?= $dados['LIMITE_DIARIO'] ?>" onkeyup="limite_diario(this, <?= $dados['CD_ALUNO']; ?>);" data-aluno="<?= $dados['CD_ALUNO']; ?>" class="input-text-25"></center>
+						<!--<a href="#" class="aumentar">+</a>
+						<a href="#" class="diminuir">-</a>-->
+						
+					</td>
+					<td>
+						<div class="inline box text-center">
+							<span class="font-p text-center">Extrato Crédito</span>
+							<a href="<?= base_url('pagamento/extrato/credito'); ?>/<?= $dados['CD_ALUNO']; ?>" class="btn btn-link inline bg-gray"><i class="far fa-credit-card"></i></a>
+						</div>
+						<div class="inline box text-center">
+							<span class="font-p text-center">Extrato Almoço</span>
+							<a href="<?= base_url('pagamento/extrato/almoco'); ?>/<?= $dados['CD_ALUNO']; ?>" class="btn btn-link inline bg-blue"><i class="far fa-file-alt"></i></a>
+						</div>
+					</td>
+				</tr>
+				<tr class="single">
+					<td colspan="6">
+						<div class="inline box text-center">
+							<a onclick="abrirPopUp('<?= base_url('pagamento/form_transferencia'); ?>?ra=<?= $dados['CD_ALUNO']; ?>&cd_usuario=<?= $cpf_responsavel; ?>','modal-corpo-pequeno'); return false;"  class="btn btn-link inline bg-green" alt="Transferência de Crédito" title="Transferência de Crédito"><i class="fas fa-random"></i> Transf. Crédito</a>
+						</div>
+						<div class="inline box text-center">
+							<!-- <span class="font-p text-center">Extrato Crédito</span> -->
+							<a href="<?= base_url('pagamento/extrato/credito'); ?>/<?= $dados['CD_ALUNO']; ?>" class="btn btn-link inline bg-gray"><i class="far fa-credit-card"></i> Extrato Crédito</a>
+						</div>
+						<div class="inline box text-center">
+							<!-- <span class="font-p text-center">Extrato Almoço</span> -->
+							<a href="<?= base_url('pagamento/extrato/almoco'); ?>/<?= $dados['CD_ALUNO']; ?>" class="btn btn-link inline bg-blue"><i class="far fa-file-alt"></i> Extrato Almoço</a>
+						</div>
+					</td>
+				</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+
+
+		<!--REALIZAR COMPRA-->
+		<header class="header-top">
+			<div class="box left">
+				<h2 class="header-title"><?= $titulo_header_3; ?></h2>
+			</div>
+			<div class="box right">
+			</div>
+		</header>
+		
+		<div class="row">
+			<div class="row-content">
+			<div class="row-60">
+				<!-- <strong>Nome do Aluno</strong> -->
+				<select id="aluno" name="aluno" class="drop-menu">
+					<option value="0" selected="selected">Selecione o Aluno</option>
+					<!-- <option value="0">------</option> -->
+					<?php foreach($listar_aluno as $dados): ?>
+					<option value="<?= $dados['CD_ALUNO']."-".$dados['NM_USUARIO']."-".$dados['PERC_DESC_ALMOCO']; ?>"><?= $dados['NM_USUARIO']; ?></option>
+					<?php endforeach; ?>
+				</select>
+
+				<input type="hidden" id="cpf_responsavel" name="cpf_responsavel" value="<?= $cpf_responsavel; ?>">
+			</div>
+			<div class="row-35">
+				<div class="label">
+				<!-- <strong>Nome do Item</strong> -->
+				<select id="item" name="item" class="drop-menu-60">
+					<option value="0" selected="selected">Selecione o Item</option>
+					<!-- <option value="0">------</option> -->
+					<?php foreach($listar_produto as $dados_item): ?>
+					<option value="<?= $dados_item['IDPRD']; ?>"><?= $dados_item['NOMEFANTASIA']; ?></option>
+					<?php endforeach; ?>
+				</select>
+				</div>
+				<div class="valores"></div>
+			</div>	
+			<div class="row-5"><div class="label"><button class="btn btn-add" id="add_item" onclick="adicionarItem(); return false;"><i class="fas fa-plus"></i> <span> Adicionar</span> </button></div></div>
+			</div>
+
+
+			<table class="tabela-cesta" id="tabela-cesta">
+				<thead>
+					<tr>
+						<td>Aluno</td>
+						<td>Descrição</td>
+						<td>Qtd.</td>
+						<td>Valor</td>
+						<td>Total</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr id="cesta-vazia">
+						<td colspan="5" align="center"><span>Nenhum Item Adicionado</span></td>
+					</tr>					
+				</tbody>
+			</table>
+			<input type="hidden" name="item_array" id="item_array" value="">
+			<input type="hidden" name="aluno_array" id="aluno_array" value="">
+
+
+			<form class="form-pagamento text-center padding-form" method="POST">
+				<input type="hidden" name="produtos_array" id="produtos_array" value="">
+				<button onclick="abrirPopUp('<?= base_url('pagamento/form_pagamento'); ?>','modal-corpo-grande'); return false;" class="btn btn-link bg-green padding-btn none margin">Efetuar Pagamento <i class="fas fa-chevron-right"></i></button>
+			</form>
+		</div>
+	</div>	
+
+
+	<!--modal ou popup-->
+	<div id="modal" class="modal-geral">
+	    <div id="modal-tamanho" class="ativar-loading">
+	        
+	    </div>
+	</div>
+
+</body>
+</html>
+
+<script src="<?= base_url('assets/js/jquery.min.js'); ?>"></script>
+<script src="<?= base_url('assets/js/jquery-ui.min.js'); ?>"></script>
+<script src="<?= base_url('assets/js/jquery.mask.js'); ?>"></script>
+<script>
+	var html = "";
+	$("#item").change(function(e){
+		
+		if($(this).val() == 2647){ // credito
+			html = '<div class="label" style="display:none;"><strong>Qtd.</strong><input type="hidden" id="qtd" name="qtd" value="1" readonly="readonly" class="readonly"></div><div class="label"><strong>Informe o Valor</strong><input type="number" id="preco" name="preco" step="0.01" value="1.00" class="preco"> </div><input type="hidden" id="descricao" name="descricao" value="<?= $listar_produto[1]['NOMEFANTASIA']?>">';
+		}else{ // almoco
+			html = '<div class="label"><strong>Qtd.</strong><input type="number" id="qtd" class="qtd" name="qtd" value="1" pattern="[0-9]+$" onkeyup="numero(this)"></div> <div class="label"><strong>Preço R$</strong><input type="number" id="preco" name="preco" value="" readonly="readonly" class="readonly preco_almoco" step="0.01"></div> <input type="hidden" id="descricao" name="descricao" value="<?= $listar_produto[0]['NOMEFANTASIA']?>">';
+		}
+
+		$(".valores").html(html);
+
+		e.preventDefault();
+	});
+
+
+	function numero(props){
+		elementValor = document.querySelector("#qtd");
+
+		valor = props.value;
+		num = valor.replace(/\D+/g, "");
+
+		/*if(num <= 0 || num == ''){
+			num = 1;
+		}*/
+
+		elementValor.value = num;
+	}
+
+
+	//onkeypress="return somenteNumeros(event, 4)" onkeyup="return somenteNumeros(event, 4)"
+	function somenteNumeros(e, quantidade) {
+    var charCode = e.charCode ? e.charCode : e.keyCode;
+    // charCode 8 = backspace   
+    // charCode 9 = tab
+	   if (charCode != 8 && charCode != 9) {
+	       // charCode 48 equivale a 0   
+	       // charCode 57 equivale a 9
+	       var max = quantidade;
+	       var num = document.getElementById("qtd");  
+	       console.log(num);
+
+
+	       if ((charCode < 48 || charCode > 57)||(num.value.length >= max)) {
+	          return false;
+	       }
+	       
+	    }
+	}
+
+
+
+
+
+
+	$(document).on("change","#aluno",function(e){
+		valor = $(this).val();
+		desconto = valor.split("-");
+
+		$("#item").change(function(){
+			produto_item 	= $(this).val(); // 2648
+			//console.log(produto_item); 
+			//console.log(desconto[2]);
+			if(desconto[2] == 0){
+				novo_preco = "<?= number_format($listar_produto[0]['PRECO'],2,".","") ?>";
+			}else{
+				novo_preco = "<?= number_format($listar_produto[0]['PRECO'],2,".","") ?>" - "<?= number_format($listar_produto[0]['PRECO'],2,".","") ?>" * desconto[2] / 100;
+			}
+			
+			$(".preco_almoco").val(parseFloat(novo_preco).toFixed(2));
+			console.log(novo_preco);
+
+		});
+
+		
+		e.preventDefault();
+	});
+
+	// remove virgula e ponto da quantidade
+	/*$(document).on("keydown",".qtd",function(e){
+		qtd = $(this).val().replace(/[\.,]/g, "");
+  		$(this).val(qtd);
+    });*/
+
+	// aumenta ao clicar
+	$(document).on("click",".aumentar", function(){
+		var vl_credito = $(this).parent().find("#vl_credito");
+		var cd_aluno   = vl_credito.data("aluno");
+
+		vl_credito.val( parseFloat(vl_credito.val()) +1);
+		//console.log(vl_credito.val()+" "+cd_aluno);
+		//limite_diario(vl_credito.val(), cd_aluno);
+	});
+
+
+	// diminui ao clicar
+	$(document).on("click",".diminuir",function(){
+		var vl_credito = $(this).parent().find("#vl_credito");
+		var cd_aluno   = vl_credito.data("aluno");
+
+		vl_credito.val( parseFloat(vl_credito.val()) -1);
+		//limite_diario(vl_credito, cd_aluno);
+	});
+
+
+
+	function limite_diario(valor, cd_aluno){
+		var vl_credito = valor.value;
+		//console.log(vl_credito+cd_aluno);
+		//console.log("valor credito: "+vl_credito+"cd aluno: "+cd_aluno);
+		$.ajax({
+			url: '<?= base_url('pagamento/inicio/lancar_limite'); ?>',
+			type: 'POST',
+			data: {
+				vl_credito: vl_credito,
+				cd_aluno: cd_aluno
+			},
+			success: function(data){
+				console.log(data);
+			}
+		})
+	}
+
+	/*$(document).on("keyup","#vl_credito",function(){
+		vl_credito = $(this).val();
+		cd_aluno   = $(this).data("aluno");
+
+		$.ajax({
+			url: '<?php #base_url('pagamento/inicio/lancar_limite'); ?>',
+		 	type: 'POST',
+		 	data: {
+		 		vl_credito: vl_credito,
+		 		cd_aluno: cd_aluno
+		 	},
+		 	success: function(data){
+		 		console.log(data);
+		 	}
+		});
+
+	});*/
+
+	//ADICIONAR NA CESTA
+	var produtos_array 	= [];
+	var item_array 		= [];
+	var aluno_array 	= [];
+	var resultado_total = 0;
+	var nova_qtd 		= 0;
+	//$(document).on("click","#add_item", function(e) {
+	function adicionarItem(){
+		var tabela 			= $("#tabela-cesta tbody"),
+			aluno 			= $("#aluno").val(),
+			cpf_responsavel = $("#cpf_responsavel").val(),
+			item 			= $("#item").val(),
+			descricao 		= $("#descricao").val(),
+			qtd 			= $("#qtd").val(),
+			valor_item 		= $("#valor_item").val(),
+			preco 			= $("#preco").val(),
+			input_hidden 	= $("#produtos_array");
+			input_item 		= $("#item_array");
+			input_aluno  	= $("#aluno_array");
+			
+
+			cd_aluno 		= aluno.split("-");
+			
+
+
+			if(aluno == 0){
+				alert("Selecione o aluno!");
+				$("#aluno").css("border","1px solid red");
+				return false;
+			}else if(item == 0){
+				alert("Selecione o item!");
+				$("#item").css("border","1px solid red");
+				return false;
+			}else if(qtd == 0 || qtd == ''){
+				alert("Preencha a quantidade");
+				$("#qtd").css("border","1px solid red");
+				return false;
+			}else if(preco == 0 || preco ==''){
+				alert("Informe o valor");
+				$("#preco").css("border","1px solid red");
+				return false;
+			}else{
+				$("#cesta-vazia").remove();
+				/*console.log(input_item.val().indexOf(item));
+				console.log(aluno);
+				console.log(item);
+				console.log("item-----"+input_item.val());*/
+
+				// console.log(cd_aluno[0]+item);
+				//if(input_item.val().indexOf(item) != -1){
+				// if(input_aluno.val().indexOf(cd_aluno[0]) != -1 && input_item.val().indexOf(item) != -1){
+
+				var select_item = cd_aluno[0]+"-"+item;
+				if(input_aluno.val().indexOf(select_item) != -1){
+					alert("Já foi Selecionado!");
+					return false;
+				}else{
+					total 			= parseFloat(preco)*parseFloat(qtd);
+					resultado_total += total;
+				
+					remove  		= "<a href='#' data-id='\""+cpf_responsavel+":"+aluno+":"+item+":"+qtd+":"+preco+":"+total+":"+resultado_total+"\"' class='del_item'><i class='fas fa-times-circle icon-red'></i></a>";
+
+					/*console.log("total: "+total);
+					console.log("preco: "+preco);
+					console.log("resultado total: "+resultado_total);*/
+
+					//array de produtos
+					item_array.push(item);
+					input_item.val(item_array);
+
+					aluno_array.push(cd_aluno[0]+"-"+item);
+					input_aluno.val(aluno_array);
+
+					console.log("produto "+item_array);
+
+					/*
+					if(item_array.indexOf(item) != 1){
+						nova_qtd = Number(nova_qtd) + Number(qtd);
+						console.log(nova_qtd);
+					}*/
+
+
+					// $(".filha").each(function(){
+					// 	p_item 	= $(this).data("item");
+					// 	p_ra 	= $(this).data("ra");
+						
+					// 	if(input_item.val().indexOf(p_item) != -1){
+					// 		//console.log("--Item já foi selecionado");
+							
+
+					// 	}
+
+
+					// });
+
+					// var array = [];
+					// var total = 0;
+					// $(".marcar").each(function(){
+						
+					// 	var cd_pedido_1 = $(this).attr("id");
+					// 	console.log(cd_pedido_1);
+					// 	if(this.checked){
+					// 		array.push(cd_pedido_1);	
+					// 	}else{
+					// 		array.splice($.inArray(cd_pedido_1, array), 1);
+					// 	}
+
+
+					// 	//console.log($(this).attr("value"));
+					// 	total += parseFloat($(this).attr("value")); 
+					// })
+
+
+
+
+					//split aluno
+					arr_aluno = aluno.split("-");
+
+					tabela.append("<tr data-item="+item+" data-ra="+cd_aluno[0]+" class='filha'><td class='text-left'><span><strong>"+arr_aluno[0]+"</strong>"+arr_aluno[1]+"</span></td><td><span>"+descricao+"</span></td><td><span>"+qtd+"</span></td><td><span>"+preco+"</span></td><td><span>"+total.toFixed(2)+"</span></td></tr>");
+					
+					//var tr 			= tabela.find("tr").data("id");
+					//console.log("Item1: "+tr);	
+					produtos_array.push(cpf_responsavel+":"+aluno+":"+item+":"+qtd+":"+preco+":"+total+":"+resultado_total);
+					//input_hidden.val(produtos_array);
+					console.log(produtos_array);
+					input_hidden.attr("value",produtos_array);
+				}
+
+				$(".form-pagamento button").removeClass("none");
+				$(".form-pagamento button").addClass("block");
+				//console.log("novo produto adicionado");
+				//console.log(input_hidden.val());
+
+			}
+
+
+		//e.preventDefault();
+	//});
+		return false;
+	}
+
+	//FORMATANDO VALORES
+	$(".preco").mask("#.##0.00", {reverse: true});
+    $(document).on("keyup","#preco, #vl_credito",function(e){
+       
+        that = $(this).val().replace(",",".");
+        $(this).val(that);
+        //$(this).val(that.toFixed(4));
+    	e.preventDefault();
+    });
+
+
+
+
+    //DELETAR DA CESTA
+	$(document).on("click",".del_item",function(e){
+		id_item			= $(this).data("id");
+		let list 		= $("#produtos_array").val();
+
+
+		//list.splice(list.indexOf(id_item), 1);
+		//produtos_array = $("#produtos_array").attr("value");
+		$("#item_array").attr("value","");
+		$("#produtos_array").attr("value","");
+		//console.log(produtos_array);
+	
+		$(this).closest('tr').remove();
+	
+
+		e.preventDefault();
+	});
+
+	
+
+	//ABRIR POPUP
+	function abrirPopUp(pagina,modal_corpo_tamanho){
+
+		loading = '<div class="mascara_branca"><div class="loading_circle"><div class="loading fade"></div><div class="loading2 fade"></div></div></div>';	
+		var produtos_array = $("#produtos_array").val();
+
+		if(produtos_array == "[]" || produtos_array == " " || produtos_array == ""){
+			alert("Selecione algum item e aluno!");
+			return false;
+		}else{
+			$.ajax({
+				url: pagina,
+				type: 'POST',
+				data: {
+					produtos_array: produtos_array
+				},
+				dataType: 'html',
+				beforeSend: function(){
+					$("#modal").addClass("modal-ativo");
+					$(".ativar-loading").html(loading);
+				}
+			}).done(function(data){
+				if($("#modal").hasClass("modal-ativo")){
+					$(".ativar-loading").addClass(modal_corpo_tamanho);
+					$("."+modal_corpo_tamanho).html(data);
+					
+					console.log("ok existe modal ativo");				
+				}else{
+					//fecharpopup();
+					//console.log($("#produtos_array").val(""));
+				}
+			});	
+		}
+		
+
+		return false;
+	}
+
+	//FECHAR POPUP
+	function fecharpopup(props){
+		$("#modal").fadeOut(3000);
+		$("#modal").removeClass("modal-ativo");
+		$("#modal").find('#modal-tamanho').removeClass('modal-corpo-grande');
+		$("#modal").find("#modal-tamanho").removeClass("modal-corpo-medio");
+		$("#modal").find("#modal-tamanho").removeClass("modal-corpo-pequeno");
+		$("#modal").find("#modal-tamanho").html("");	
+		//window.location.reload();
+		// window.close();	
+		window.location.href = "https://seculomanaus.com.br/componentes/portal/pagamento/inicio?Context=CodUsuario="+props;
+
+	}
+
+	//CONTEUDO MODAL
+	function conteudoModal(pagina){
+
+		formaPagamento = $("#formaPagamento").val();
+		codigoBandeira = $("#codigoBandeira").val();
+		numeroCartao   = $("#numeroCartao").val();
+		Cvv 		   = $("#Cvv").val();
+		Mes 		   = $("#Mes").val();
+		Ano 		   = $("#Ano").val();
+		Vencimento	   = Mes+"/"+Ano;
+		Nome 		   = $("#Nome").val();
+	 	valorTotal	   = $("#valorTotal").val();
+	 	produtosArray  = $("#produtosArray").val();
+
+	 	//console.log(Vencimento);
+
+	 	if(formaPagamento == 0){
+	 		alert("Selecione o Campo Forma de Pagamento");
+	 		$("#formaPagamento").css("border","1px solid red");
+	 	}else if(codigoBandeira == 0){
+	 		alert("Selecione o Campo Forma de Pagamento");
+	 		$("#codigoBandeira").css("border","1px solid red");
+	 	}else if(numeroCartao == ""){
+	 		alert("Selecione o Campo Número do Cartão");
+	 		$("#numeroCartao").css("border","1px solid red");
+	 	}else if(Cvv == ""){
+	 		alert("Selecione o Campo Cvv");
+	 		$("#Cvv").css("border","1px solid red");
+	 	}else if(Vencimento == ""){
+	 		alert("Selecione o Campo Vencimento");
+	 		$("#Vencimento").css("border","1px solid red");
+	 	}else if(Nome == ""){
+	 		alert("Selecione o Campo Nome");
+	 		$("#Nome").css("border","1px solid red");
+	 	}else{
+		 	$.ajax({
+		 		url: pagina,
+		 		type: 'POST',
+		 		data: {
+		 			formaPagamento: formaPagamento,
+		 			codigoBandeira: codigoBandeira,
+		 			numeroCartao: numeroCartao,
+		 			Cvv: Cvv,
+		 			Vencimento: Vencimento,
+		 			Nome: Nome,
+		 			valorTotal: valorTotal,
+		 			produtosArray: produtosArray
+		 		},
+		 		dataType: 'html',
+		 		beforeSend: function(){
+		 			$("#conteudoModal").html("<h2 style='text-center'>Carregando....</h2>");
+		 		},
+		 		success: function(data){
+		 			//console.log(data);
+		 			$("#conteudoModal").html(data);
+		 			//fecharpopup();
+		 		}
+		 	});
+	 	}
+
+
+	 	return false;
+	}
+
+</script>

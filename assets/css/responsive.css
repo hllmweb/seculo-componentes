@@ -1,0 +1,361 @@
+@media only screen 
+    and (max-width: 760px), (min-device-width: 768px) 
+    and (max-device-width: 1024px)  {
+    	.header-title{
+    		padding:10px 0;
+    	}
+    	.header .right a{
+    		display: none;
+    	}
+		.padding-btn {
+		    padding: 0px 10px;
+		}
+		.padding-form{
+			padding: 10px 5px;
+		}
+		.margin{
+			margin:20px 0;
+		}
+		.row-content{
+			padding:10px 5px;
+		}
+		.margin-50-center{
+			width:100%; 
+			margin:auto;
+		}
+		table, thead, tbody, th, td, tr {
+			display: block;
+			border:0;
+		}
+		thead tr {
+			position: absolute;
+			top: -9999px;
+			left: -9999px;
+		}
+
+	    tr{
+	      margin: 0 0 1rem 0;
+	    }
+      
+	    tr:nth-child(odd) {
+	      background: transparent;
+	    }
+    
+		td {
+			border: none;
+			border-bottom: 1px solid #eee;
+			position: relative;
+			/*padding-left: 50%;*/
+		}
+
+		td:before {
+			position: absolute;
+			top: 5px;
+			left: 0;
+			/*width: 45%;
+			padding-right: 10px;*/
+			white-space: nowrap;
+		}
+
+		td:nth-of-type(1):before { content: "Nome"; font-weight: bold; text-align: right; vertical-align: middle;}
+		td:nth-of-type(2):before { content: "Saldo Crédito"; font-weight: bold; text-align: right; vertical-align: middle;}
+		td:nth-of-type(3):before { content: "Saldo Almoço"; font-weight: bold; text-align: right; vertical-align: middle;}
+		td:nth-of-type(4):before { content: "Limite de Crédito Diário"; font-weight: bold; text-align: right; vertical-align: middle;}
+		td:nth-of-type(5):before,
+		td:nth-child(5){ /*display:none; content: "Ações"; font-weight: bold; text-align: right;*/}
+		.tabela-1 tbody tr td:nth-child(6),
+		.tabela-1 tbody tr td:nth-child(4){display: none;}
+		.tabela-1 tbody tr td{
+			text-align: right;
+			border-bottom: 1px dashed #CCC;
+		}
+		.tabela-1 tbody tr td:last-child{
+			border-bottom: 0;
+		}
+		.tabela-1 tbody tr td span{
+			font-size:0.9rem;
+		}
+		/*.single td,*/
+		.single td:before{
+			display: none;
+		}
+		.row-20 strong{
+			display: block;
+			font-size:1rem;
+			text-align: left;
+			margin-bottom: 2px;
+		}
+		/*.single td{
+			display: block;
+			width: 100%;
+			text-align: center;
+		}*/
+		.single {
+ 			 display: block;
+		}
+		.single td {
+			box-sizing: border-box;
+		}
+		.single td .box a.btn{
+			width: 100% !important;
+			box-sizing: border-box;
+			margin:5px 0;
+		}
+		.btn-link{
+			margin: 0;
+		}
+		.row-60, .row-50, .row-35, .row-5{
+			display: block;
+			width: 100%;
+		}
+		.row-50 .drop-select{
+			margin-bottom: 10px;
+		}
+		.row-60{
+			margin:0;
+			padding:0;
+		}
+		.row-60 select,
+		.row-60 .input-text{
+			width: 100%;
+		}
+		.row-35 .valores{
+			width: 100%;
+			display: block;
+		}
+		.row-35 .valores .label input{
+			width: 100%;
+			display: block;
+		}
+		.row-35 .label,
+		.row-5 .label{
+			width: 100%;
+		}
+		.drop-menu-60, .drop-select{
+			width: 100%;
+			display: block;
+		}
+		.row-5 .label .btn-add{
+			width: 100%;
+		}
+		.row-5 .label .btn-add span{
+			display: inline-block;
+		}
+		.row-20{
+			width: 100%;
+			display: block;
+			margin: 0;
+		}
+		.margin-left {
+ 			margin-left: 0px !important;
+		}
+		.margin-left input{
+			width: 100%;
+		}
+		.tabela-cesta{
+			background-color: #e8e8e8;
+		}
+		.tabela-cesta, thead, tbody, th, td, tr {
+			display: block;
+			border:0;
+		}
+		.tabela-cesta thead tr {
+			position: absolute;
+			top: -9999px;
+			left: -9999px;
+		}
+		.tabela-cesta tbody tr td span{
+			font-size:0.8rem;
+			font-weight: 500;
+		}
+	    .tabela-cesta tr{
+	      /*margin: 0 0 1rem 0;*/
+	      margin:0;
+	    }
+      
+	    .tabela-cesta tr:nth-child(odd) {
+	      background: transparent;
+	    }
+    
+		.tabela-cesta td {
+			border: none;
+			/*border-bottom: 1px solid #eee;*/
+			position: relative;
+			text-align: right !important;
+			/*padding-left: 50%;*/
+		}
+		.tabela-cesta tr td:before {
+			position: absolute;
+			top: 0;
+			left: 6px;
+			width: 45%;
+			padding-right: 10px;
+			white-space: nowrap;
+		}
+		.tabela-cesta tr td:nth-of-type(1):before { /*content: "Nome";*/ font-weight: bold; text-align: right;}
+		.tabela-cesta tr td:nth-of-type(2):before { /*content: "Saldo Crédito";*/ font-weight: bold; text-align: right;}
+		.tabela-cesta tr td:nth-of-type(3):before { /*content: "Saldo Almoço";*/ font-weight: bold; text-align: right;}
+		.tabela-cesta tr td:nth-of-type(4):before { /*content: "Limite de Crédito Diário";*/ font-weight: bold; text-align: right;}
+		.tabela-cesta tr td:nth-of-type(5):before { /*content: "Ações"; */font-weight: bold; text-align: right;}
+
+
+
+
+
+
+
+
+
+
+
+		.tabela-3{
+			background-color: #e8e8e8;
+		}
+		.tabela-3, thead, tbody, th, td, tr {
+			display: block;
+			border:0;
+		}
+		.tabela-3 thead tr {
+			position: absolute;
+			top: -9999px;
+			left: -9999px;
+		}
+		.tabela-3 tbody tr td span{
+			font-size:0.8rem;
+			font-weight: 500;
+		}
+	    .tabela-3 tr{
+	      /*margin: 0 0 1rem 0;*/
+	      margin:0;
+	    }
+      
+	    .tabela-3 tr:nth-child(odd) {
+	      background: transparent;
+	    }
+    
+		.tabela-3 td {
+			border: none;
+			/*border-bottom: 1px solid #eee;*/
+			position: relative;
+			text-align: center !important;
+			/*padding-left: 50%;*/
+		}
+		.tabela-3 tr td:before {
+			position: absolute;
+			top: 0;
+			left: 6px;
+			width: 45%;
+			padding-right: 10px;
+			white-space: nowrap;
+		}
+		.tabela-3 tr td:nth-of-type(1):before { /*content: "Nome";*/ font-weight: bold; text-align: right;}
+		.tabela-3 tr td:nth-of-type(2):before { /*content: "Saldo Crédito";*/ font-weight: bold; text-align: right;}
+		.tabela-3 tr td:nth-of-type(3):before { /*content: "Saldo Almoço";*/ font-weight: bold; text-align: right;}
+		.tabela-3 tr td:nth-of-type(4):before { /*content: "Limite de Crédito Diário";*/ font-weight: bold; text-align: right;}
+		.tabela-3 tr td:nth-of-type(5):before { /*content: "Ações"; */font-weight: bold; text-align: right;}
+
+
+
+
+
+
+		.modal-corpo-pequeno,
+		.modal-corpo-medio,
+		.modal-corpo-grande{margin-top:0px;}
+		table.tabela-2, thead, tbody, th, td, tr {
+			display: block;
+			border:0;
+		}
+		.tabela-2 thead tr {
+			position: absolute;
+			top: -9999px;
+			left: -9999px;
+		}
+
+	    .tabela-2 tr{
+	      margin: 0 0 1rem 0;
+	    }
+      
+	    .tabela-2 tr:nth-child(odd) {
+	      background: transparent;
+	    }
+    
+		.tabela-2 td {
+			border: none;
+			border-bottom: 1px solid #eee;
+			position: relative;
+			padding-left: 50%;
+		}
+		.tabela-2 td:before {
+			position: absolute;
+			top: 0;
+			left: 6px;
+			width: 45%;
+			padding-right: 10px;
+			white-space: nowrap;
+		}
+		.tabela-2 td:nth-of-type(1):before { content: "Data"; font-weight: bold; text-align: right;}
+		.tabela-2 td:nth-of-type(2):before { content: "Historico"; font-weight: bold; text-align: right;}
+		.tabela-2 td:nth-of-type(3):before { content: "Qtd."; font-weight: bold; text-align: right;}
+		.tabela-2 td:nth-of-type(4):before { content: "Saldo Final"; font-weight: bold; text-align: right;}
+		.tabela-2 td:nth-of-type(5):before,
+		.tabela-2 td:nth-child(5){ display:none; /*content: "Ações"; font-weight: bold; text-align: right;*/}
+		.box{
+			display: block;
+			width: 100%;
+		}
+		/*.box-right a i{display: block !important; font-size:1.5rem;}*/
+		/*.box-right a span{display: none !important;}*/
+
+		.dropmenu{
+			width: 80%;
+		}
+		.box-bottom button.btn-link,
+		.form-pagamento button.btn-link{
+			width: 100%;
+		}
+		.filha{
+			border-bottom: 1px solid #cecece; 
+		}
+		.filha td{
+			display: inline-block;
+			width: 50%;
+		}
+		.filha td:nth-child(4){
+			width: 50%;
+			text-align: center;
+		}
+		.filha td:nth-child(4) span{
+			display: block;
+			text-align: right;
+		} 
+		.filha td:nth-child(5){
+			border-top:1px dashed #CCC;
+			width:100%; text-align:right;
+			padding:0;
+			background-color: #333;
+		}
+		.filha td:nth-child(5) span{
+			padding-right:5px;
+			font-size:1rem;
+			font-weight:  700;
+			color:#FFF;
+		}
+		#cesta-vazia td{
+			text-align: center !important;
+		}
+		.del_item{
+			display: none;
+		}
+		.vfloat-right{
+			position: absolute;
+			font-size:0.8rem;
+			right:20px;
+			top:0;
+			font-weight: bold;
+			color:rgb(17, 17, 17);
+		}
+		.none{
+			display: none;
+		}
+	}
